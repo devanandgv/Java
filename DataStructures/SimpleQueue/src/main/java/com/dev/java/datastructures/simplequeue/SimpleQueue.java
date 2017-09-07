@@ -8,7 +8,11 @@ public class SimpleQueue<E> {
 
 	public void offer(E value) {
 
-		if (isNull(this.head)) {
+		if (isNull(value))
+
+			throw new NullPointerException("Value is NULL");
+
+		else if (isNull(this.head)) {
 
 			Node<E> tempHead = new Node<>();
 			tempHead.setNodeValue(value);
@@ -16,22 +20,27 @@ public class SimpleQueue<E> {
 			this.head = tempHead;
 			this.tail = tempHead;
 			size = 1;
+
 		} else {
+
 			Node<E> tempTail = new Node<>();
 			tempTail.setNodeValue(value);
 			tempTail.setNodeNext(null);
 			this.tail.setNodeNext(tempTail);
 			this.tail = tempTail;
 			size++;
+
 		}
 
 	}
 
 	public E poll() throws Exception {
-		if (size == 0) {
 
-			throw new Exception("Queue is Empty");
-		} else {
+		if (size == 0)
+
+			return null;
+
+		else {
 
 			Node<E> tempHead = this.head;
 			this.head = this.head.getNodeNext();
@@ -44,10 +53,11 @@ public class SimpleQueue<E> {
 
 	public void show() throws Exception {
 
-		if (size == 0) {
+		if (size == 0)
 
-			throw new Exception("Queue is Empty");
-		} else {
+			throw new NullPointerException("Queue is Empty");
+
+		else {
 
 			Node<E> tempHead = this.head;
 
@@ -57,6 +67,17 @@ public class SimpleQueue<E> {
 
 			} while (tempHead != null);
 		}
+	}
+
+	public E peek() {
+
+		if (size == 0)
+
+			return null;
+
+		else
+
+			return this.head.getNodeValue();
 	}
 
 	public int getSize() {
