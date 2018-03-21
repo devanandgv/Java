@@ -14,7 +14,7 @@ public class SimpleQueue<E> {
 
 		else if (isNull(this.head)) {
 
-			Node<E> tempHead = new Node<>();
+			Node<E> tempHead = new Node<E>();
 			tempHead.setNodeValue(value);
 			tempHead.setNodeNext(null);
 			this.head = tempHead;
@@ -23,7 +23,7 @@ public class SimpleQueue<E> {
 
 		} else {
 
-			Node<E> tempTail = new Node<>();
+			Node<E> tempTail = new Node<E>();
 			tempTail.setNodeValue(value);
 			tempTail.setNodeNext(null);
 			this.tail.setNodeNext(tempTail);
