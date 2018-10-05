@@ -18,87 +18,28 @@ import java.util.concurrent.ConcurrentLinkedDeque;
  * */
 public class CountThreadPool extends Thread {
 
-	static ConcurrentLinkedDeque<Thread> taskQueue = new ConcurrentLinkedDeque<>();
-	static ConcurrentLinkedDeque<Thread> resultQueue = new ConcurrentLinkedDeque<>();
-	
-	private int min;
+	private static ConcurrentLinkedDeque<Thread> taskQueue = new ConcurrentLinkedDeque<>();
+	private static ConcurrentLinkedDeque<Thread> resultQueue = new ConcurrentLinkedDeque<>();
 
-	private int max;
-
-
-	private int noOfDivisor;
-
-	private int maxDivisor;
-
-	public CountThreadPool(int min, int max) {
-		super();
-		this.min = min;
-		this.max = max;
-	}
-
-
-	public int getMaxDivisor() {
-		return maxDivisor;
-	}
-
-	public void setMaxDivisor(int maxDivisor) {
-		this.maxDivisor = maxDivisor;
-	}
-
-	public int getNoOfDivisor() {
-		return noOfDivisor;
-	}
-
-	public void setNoOfDivisor(int noOfDivisor) {
-		this.noOfDivisor = noOfDivisor;
-	}
-
-	private void countDivisor() {
-
-		int result = 0;
-		int no = min;
-		for (int i = min; i < max; i++) {
-			int count = 1;
-			for (int j = 2; j <= i; j++) {
-				if (i % j == 0) {
-					count++;
-				}
-			}
-			if (count > result) {
-				result = count;
-				no = i;
-			}
-
-		}
-		resultQueue.add(new ResultThreadPool(no));
-		this.setMaxDivisor(no);
-		this.setNoOfDivisor(result);
-	}
-
-	@Override
-	public void run() {
-
-		countDivisor();
-	}
+	private static final int NO_OF_SUBTASK = 10;
+	private static final int START = 1;
+	private static final int END = 100000;
 
 	public static void main(String[] args) throws InterruptedException {
 
-		ConcurrentLinkedDeque<Thread> taskQueue = new ConcurrentLinkedDeque<>();
-		int noOfSubTask = 10;
-		int min = 1;
-		int max = 100000;
-		int subTaskLimit = max / noOfSubTask;
-		CountThreadPool[] threadPoolTask = new CountThreadPool[noOfSubTask];
-		for (int j = min, i = 0; j <= (max - noOfSubTask) && i <= noOfSubTask; j = j + subTaskLimit, i++) {
+		int subTaskLimit = END / NO_OF_SUBTASK;
 
-			System.out.println("j:" + j + "j+subTask:" + (j + subTaskLimit - min) + "i : " + i);
-			threadPoolTask[i] = new CountThreadPool(j, j + subTaskLimit - min);
+		TaskThread[] threadPoolTask = new TaskThread[NO_OF_SUBTASK];
+		for (int j = START, i = 0; j <= (END - NO_OF_SUBTASK) && i <= NO_OF_SUBTASK; j = j + subTaskLimit, i++) {
+
+			System.out.println("j:" + j + "j+subTask:" + (j + subTaskLimit - START) + "i : " + i);
+			threadPoolTask[i] = new TaskThread(j, j + subTaskLimit - START);
 			taskQueue.add(threadPoolTask[i]);
 
 		}
 		while (true) {
 
-			CountThreadPool task = (CountThreadPool) taskQueue.poll();
+			TaskThread task = (TaskThread) taskQueue.poll();
 			if (task == null) {
 				break;
 			}
@@ -106,6 +47,7 @@ public class CountThreadPool extends Thread {
 			task.join();
 			System.out.println(task.getNoOfDivisor());
 		}
+
 		while (true) {
 
 			ResultThreadPool task = (ResultThreadPool) resultQueue.poll();
@@ -114,10 +56,60 @@ public class CountThreadPool extends Thread {
 			}
 			task.start();
 			task.join();
-			
+
 		}
-		System.out.println("result : "+ResultThreadPool.result);
-		
+		System.out.println("result : " + ResultThreadPool.result);
+
+	}
+
+	private static class TaskThread extends Thread {
+
+		private int min;
+
+		private int max;
+
+		private int noOfDivisor;
+
+		public TaskThread(int min, int max) {
+			this.min = min;
+			this.max = max;
+		}
+
+		public int getNoOfDivisor() {
+			return noOfDivisor;
+		}
+
+		public void setNoOfDivisor(int noOfDivisor) {
+			this.noOfDivisor = noOfDivisor;
+		}
+
+		private void countDivisor() {
+
+			int result = 0;
+			int no = min;
+			for (int i = min; i < max; i++) {
+				int count = 1;
+				for (int j = 2; j <= i; j++) {
+					if (i % j == 0) {
+						count++;
+					}
+				}
+				if (count > result) {
+					result = count;
+					no = i;
+				}
+
+			}
+			resultQueue.add(new ResultThreadPool(no));
+			this.setNoOfDivisor(result);
+		}
+
+		@Override
+		public void run() {
+
+			countDivisor();
+		}
+
 	}
 
 	private static class ResultThreadPool extends Thread {
@@ -133,14 +125,14 @@ public class CountThreadPool extends Thread {
 		@Override
 		public void run() {
 
-			if(this.no > result) {
-				
+			if (this.no > result) {
+
 				setResult();
 			}
 		}
 
 		private synchronized void setResult() {
-		
+
 			result = this.no;
 		}
 	}
