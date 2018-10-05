@@ -1,6 +1,7 @@
-package com.dev.java.threads;
+package com.dev.java.threads.exercise1;
 
-/*Write a program to find out. Use the following unsynchronized counter class,
+
+/*1.Write a program to find out. Use the following unsynchronized counter class,
  *  which you can include as a nested class in your program:
 
 static class Counter {

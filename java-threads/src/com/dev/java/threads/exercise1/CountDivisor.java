@@ -1,6 +1,6 @@
-package com.dev.java.threads;
+package com.dev.java.threads.exercise1;
 
-/*Now write a program that uses multiple threads to solve the same problem, but for the range 1 to 100000
+/*2.Now write a program that uses multiple threads to solve the same problem, but for the range 1 to 100000
  *  (or less, if you don't have a fast computer). 
  * By using threads, your program will take less time to do the computation when it is run on a multiprocessor computer.
  *  At the end of the program, output the elapsed time, 
@@ -79,7 +79,7 @@ public class CountDivisor extends Thread {
 
 	public static void main(String[] args) throws InterruptedException {
 
-		CountDivisor countDivisor1 = new CountDivisor(1, 25000);
+		/*CountDivisor countDivisor1 = new CountDivisor(1, 25000);
 		CountDivisor countDivisor2 = new CountDivisor(25000, 50000);
 		CountDivisor countDivisor3 = new CountDivisor(50000, 75000);
 		CountDivisor countDivisor4 = new CountDivisor(75000, 100000);
@@ -95,7 +95,11 @@ public class CountDivisor extends Thread {
 		System.out.println(countDivisor2.getNoOfDivisor() + " " + countDivisor2.getMaxDivisor());
 		System.out.println(countDivisor3.getNoOfDivisor() + " " + countDivisor3.getMaxDivisor());
 		System.out.println(countDivisor4.getNoOfDivisor() + " " + countDivisor4.getMaxDivisor());
-		System.out.println(CountDivisor.getMaxNo());
+		System.out.println(CountDivisor.getMaxNo());*/
+		CountDivisor countDivisor4 = new CountDivisor(1, 100000);
+		countDivisor4.start();
+		countDivisor4.join();
+		System.out.println(maxNo);
 	}
 
 }
